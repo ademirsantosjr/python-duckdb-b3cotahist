@@ -1,5 +1,4 @@
-data/*.TXT
-data/*.zip
-data/*.duckdb
+data/*
+!data/.gitkeep
+.ipynb_checkpoints/
 __pycache__/
-.env

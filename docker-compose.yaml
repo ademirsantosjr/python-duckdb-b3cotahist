@@ -1,9 +1,11 @@
 services:
-  app:
+  b3-engine:
     build: .
-    container_name: b3_engine
+    container_name: b3_analytics
     volumes:
-      - .:/app          # Sync the code
-      - ./data:/data    # Sync the data and the .duckdb database
+      - .:/app
+      - ./data:/data  # Your .duckdb file and B3 TXTs go here
+    ports:
+      - "8888:8888"
     environment:
       - PYTHONUNBUFFERED=1
