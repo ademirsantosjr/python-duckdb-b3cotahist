@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    container_name: b3_engine
+    volumes:
+      - .:/app          # Sync the code
+      - ./data:/data    # Sync the data and the .duckdb database
+    environment:
+      - PYTHONUNBUFFERED=1
