@@ -1,0 +1,1 @@
+print("Ingesting B3 data...")
