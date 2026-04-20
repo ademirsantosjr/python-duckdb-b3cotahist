@@ -1,0 +1,5 @@
+data/*.TXT
+data/*.zip
+data/*.duckdb
+__pycache__/
+.env
