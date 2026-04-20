@@ -9,5 +9,5 @@ docker-compose up -d --build
 File processing
 
 ```bash
-docker exec -it b3_engine python scripts/ingest.py
+docker exec -it b3_analytics python scripts/ingest.py
 ```
