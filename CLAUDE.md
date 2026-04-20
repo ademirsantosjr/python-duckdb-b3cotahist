@@ -44,3 +44,5 @@ docker exec -it b3_analytics bash
 ## B3 COTAHIST format
 
 COTAHIST files are fixed-width ASCII files published by B3. Each daily or annual file contains one header record (type `00`), detail records (type `01`, one per quote), and a trailer (type `99`). The detail record layout is documented in the official B3 specification ("Layout arquivo COTAHIST").
+
+**Important:** Whenever the context involves the COTAHIST file layout — field names, positions, types, record structure, BDI codes, market types, or security specifications — always read `SeriesHistoricas_Layout.md` before answering or writing code.
