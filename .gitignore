@@ -2,3 +2,9 @@ data/*
 !data/.gitkeep
 .ipynb_checkpoints/
 __pycache__/
+
+*.ipynb
+
+SeriesHistoricas_Layout.pdf
+
+*.SPECIFICATION.md

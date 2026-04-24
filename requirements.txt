@@ -1,4 +1,8 @@
 duckdb==1.4.4
 polars==1.40.0
+pyarrow
+pandas
+numpy
+plotly
 psycopg2-binary  # In case of exporting to Postgres later
 jupyterlab       # For the analysis UI
