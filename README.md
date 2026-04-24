@@ -119,11 +119,15 @@ import duckdb
 
 con = duckdb.connect("/data/b3_data.duckdb")
 
-# Example: closing prices for PETR4 in 2024
+# Resources Tip
+con.execute("SET threads TO 2;")
+con.execute("SET memory_limit = '2GB';")
+
+# Example
 con.sql("""
-    SELECT datpre, preult
+    SELECT datpre, codbdi, codneg, especi, preult, totneg, quatot, voltot, preexe, datven
     FROM cotacoes
-    WHERE codneg = 'PETR4' AND YEAR(datpre) = 2024
+    WHERE codneg = 'PETR4' AND YEAR(datpre) = 2025
     ORDER BY datpre
 """).df()
 ```
