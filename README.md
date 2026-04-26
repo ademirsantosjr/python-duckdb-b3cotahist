@@ -158,3 +158,50 @@ con.sql("""
 | Query engine | DuckDB 1.4.4 |
 | Data processing | Polars 1.40.0 |
 | Source data | B3 COTAHIST fixed-width files |
+
+---
+
+## Google Colab Quick-Start
+
+You can run the full analytics pipeline directly in Google Colab without installing anything locally. The DuckDB database lives in Google Drive and is copied to Colab's ephemeral `/content/` directory at session start for performance.
+
+### Prerequisites
+
+- A Google account with Google Drive.
+- COTAHIST TXT or ZIP files downloaded from [B3](https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/historico/mercado-a-vista/series-historicas/).
+
+### Recommended Drive folder layout
+
+```
+MyDrive/
+└── b3_data/
+    ├── raw/          ← Place COTAHIST TXT/ZIP files here
+    ├── db/           ← b3_data.duckdb (created/updated after first ingest)
+    ├── scripts/      ← Copy scripts/ingest.py here
+    └── notebooks/    ← Optional: exported notebook outputs
+```
+
+### Workflow
+
+1. Copy `scripts/ingest.py` to `MyDrive/b3_data/scripts/`.
+2. Upload COTAHIST files to `MyDrive/b3_data/raw/`.
+3. Open `notebooks/colab_ingest.ipynb` in Google Colab (right-click the file in Drive → Open with → Google Colaboratory).
+4. Run all cells in order. Colab will prompt you to authorise Drive access.
+5. After ingest completes, open `notebooks/colab_analysis.ipynb` for queries and charts.
+
+### ⚠ File lock warning
+
+DuckDB holds an **exclusive write lock** on the `.duckdb` file while a session is open. Do not open the same `b3_data.duckdb` file from two machines or two Colab sessions simultaneously — one session will fail to acquire the lock.
+
+Always run the **"Sync DB back to Drive"** cell before closing or resetting a Colab session. Colab's `/content/` filesystem is ephemeral — all files vanish on reset.
+
+### Colab vs. Docker comparison
+
+| Feature            | Docker / JupyterLab  | Google Colab        |
+|--------------------|----------------------|---------------------|
+| Setup              | `docker-compose up`  | Open notebook in Drive |
+| Data location      | `./data/` (local)    | `MyDrive/b3_data/`  |
+| DB location (live) | `/data/b3_data.duckdb` | `/content/b3_data.duckdb` |
+| DB persistence     | Volume mount         | Manual Drive sync   |
+| Cost               | Local compute        | Free (with limits)  |
+| Multi-year dataset | Unlimited local disk | ~100–300 MB/year, fits in 12 GB RAM |

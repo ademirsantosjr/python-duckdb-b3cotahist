@@ -1,0 +1,3 @@
+# Minimal extra deps for Google Colab (already has pyarrow, pandas, numpy, plotly).
+duckdb==1.4.4
+polars==1.40.0

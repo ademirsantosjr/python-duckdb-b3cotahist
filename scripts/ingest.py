@@ -8,13 +8,11 @@ in the `ingested_files` tracking table. Appends to /data/b3_data.duckdb.
 Field positions follow the official B3 layout spec (1-based, inclusive):
   SeriesHistoricas_Layout.md
 """
+import os
 import duckdb
 import polars as pl
 import zipfile
 from pathlib import Path
-
-DATA_DIR = Path("/data")
-DB_PATH = DATA_DIR / "b3_data.duckdb"
 
 
 def ensure_schema(con: duckdb.DuckDBPyConnection) -> None:
@@ -155,24 +153,44 @@ def ingest_file(con: duckdb.DuckDBPyConnection, path: Path) -> None:
     print(f"{len(df):,} rows inserted")
 
 
-def main() -> None:
+def run_ingest(
+    data_dir: Path | str = Path("/data"),
+    db_path: Path | str | None = None,
+) -> None:
+    """
+    Callable entry point for both Docker (CLI) and Colab (notebook import).
+
+    data_dir  – directory containing COTAHIST TXT/ZIP files.
+    db_path   – path to the DuckDB file; defaults to <data_dir>/b3_data.duckdb.
+    """
+    data_dir = Path(data_dir)
+    if db_path is None:
+        db_path = data_dir / "b3_data.duckdb"
+    db_path = Path(db_path)
+
     candidates = sorted(
-        p for p in DATA_DIR.iterdir()
+        p for p in data_dir.iterdir()
         if p.stem.upper().startswith("COTAHIST")
         and p.suffix.upper() in {".TXT", ".ZIP"}
     )
 
     if not candidates:
-        print("No COTAHIST files found in /data")
+        print(f"No COTAHIST files found in {data_dir}")
         return
 
-    with duckdb.connect(str(DB_PATH)) as con:
+    with duckdb.connect(str(db_path)) as con:
         ensure_schema(con)
         for path in candidates:
             print(f"→ {path.name}")
             ingest_file(con, path)
 
     print("Done.")
+
+
+def main() -> None:
+    data_dir = Path(os.environ.get("B3_DATA_DIR", "/data"))
+    db_path  = Path(os.environ.get("B3_DB_PATH", str(data_dir / "b3_data.duckdb")))
+    run_ingest(data_dir, db_path)
 
 
 if __name__ == "__main__":
