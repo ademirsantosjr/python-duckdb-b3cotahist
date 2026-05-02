@@ -55,6 +55,15 @@ COTAHIST files are fixed-width ASCII files published by B3. Each daily or annual
 
 **Important:** Whenever the context involves the COTAHIST file layout — field names, positions, types, record structure, BDI codes, market types, or security specifications — always read `SeriesHistoricas_Layout.md` before answering or writing code.
 
+### Linking options to their underlying stock
+
+B3 option tickers use a **4-character company root** in `codneg` (e.g. `PETR`, not `PETR4`), so both PETR3 (ON) and PETR4 (PN) options share the same root. A `codneg LIKE 'PETR4%'` filter is unreliable. The correct approach requires **two** filters:
+
+1. `codneg LIKE '{TICKER[:4]}%'` — match on the 4-char root.
+2. `SUBSTR(especi, 1, 2) = SUBSTR(underlying.especi, 1, 2)` — match the share class from the underlying stock's own `especi` field. Options inherit the `especi` of their underlying: ordinary shares (PETR3) → `ON…`, preferred shares (PETR4) → `PN…`.
+
+Always fetch the underlying's `especi` from `cotacoes` (with `codbdi = '02'`) and apply this two-part filter whenever querying options for a specific stock.
+
 ## Google Colab
 
 An alternative to the Docker/JupyterLab workflow. The database lives in Google Drive (`MyDrive/b3_data/`); notebooks copy it to `/content/` at session start for performance and sync it back before closing. See the **Google Colab Quick-Start** section in `README.md` for the full setup, Drive folder layout, and the file-lock warning.
